@@ -101,6 +101,7 @@ public class EmpleadoManager {
 
     public boolean despedirEmpleado(int codigo) throws IOException {
         remps.seek(0);
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         while (remps.getFilePointer() < remps.length()) {
             int codigoLeido = remps.readInt();
             String nombre = remps.readUTF();
@@ -111,9 +112,13 @@ public class EmpleadoManager {
             long fechaDespido = remps.readLong();
             if (codigoLeido == codigo && fechaDespido == 0) {
                 // Actualiza la fecha de despido del empleado
+                Date fechaActual = Calendar.getInstance().getTime();
                 remps.seek(fechaDespidoPos);
-                remps.writeLong(Calendar.getInstance().getTimeInMillis());
+                remps.writeLong(fechaActual.getTime());
+
                 System.out.println("Empleado despedido: " + nombre);
+                System.out.println("Fecha de despido: " + sdf.format(fechaActual));  // Mostrar la fecha de despido
+
                 return true;
             }
         }
